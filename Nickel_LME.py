@@ -6,6 +6,7 @@ import json
 import re
 import plotly.express as px
 
+
 # Function to fetch and parse data
 def fetch_nickel_data():
     url = "https://www.trmsa.org.tw/front/metal?qryMetal=ni"
@@ -46,32 +47,26 @@ def fetch_nickel_data():
 # Streamlit App Layout
 st.title("Nickel Price Data Visualization")
 
-st.write("Fetching latest Nickel price data dynamically.")
+st.write("Fetching latest Nickel price data.")
 
 # Fetch and store sorted data
 data = fetch_nickel_data()
 
 if not data.empty:
-    # Create two columns for the main layout (Left and Right)
-    col1, col2 = st.columns([2, 1])  # Adjust the ratio as per your preference
+    # Upper part (Nickel Price plot)
+    st.subheader("Nickel Price Trend (Bid & Offer)")
+    fig = px.line(data, x='date', y=['Bid', 'Offer'], title='Nickel Price Trend')
+    fig.update_traces(mode='lines+markers')
+    st.plotly_chart(fig)
     
-    # Left column (further divided into upper and lower parts)
-    with col1:
-        # Upper part (Nickel Price plot)
-        st.subheader("Nickel Price Trend (Bid & Offer)")
-        fig = px.line(data, x='date', y=['Bid', 'Offer'], title='Nickel Price Trend')
-        fig.update_traces(mode='lines+markers')
-        st.plotly_chart(fig)
-        
-        # Lower part (Volatility difference plot)
-        st.subheader("Volatility Difference (Offer - Bid)")
-        fig_diff = px.bar(data, x='date', y='Difference', title='Difference between Offer and Bid (Offer - Bid)')
-        st.plotly_chart(fig_diff)
+    st.subheader("Nickel Price Volatility, Difference (Offer - Bid)")
+    fig_diff = px.bar(data, x='date', y='Difference', title='Difference between Offer and Bid (Offer - Bid)')
+    st.plotly_chart(fig_diff)
 
-    # Right column (Data table)
-    with col2:
-        st.subheader("Latest Data")
-        st.dataframe(data)  # Show the sorted data table
+    
+    st.subheader("Latest Data")
+    st.dataframe(data)  # Show the sorted data table
+    st.write("Table can also be downloaded.")
 
 else:
     st.error("Failed to fetch data. Try again later.")
