@@ -71,4 +71,3 @@ if not data.empty:
 else:
     st.error("Failed to fetch data. Try again later.")
 
-st.button("Refresh Data", on_click=lambda: st.rerun())
